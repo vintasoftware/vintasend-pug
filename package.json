@@ -1,6 +1,6 @@
 {
   "name": "vintasend-pug",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "pug": "^3.0.3",
-    "vintasend": "^0.1.3"
+    "vintasend": "^0.1.4"
   },
   "devDependencies": {
     "@types/pug": "^2.0.10"
