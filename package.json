@@ -1,18 +1,23 @@
 {
   "name": "vintasend-pug",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
-  "author": "",
-  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "author": "Hugo Bessa",
+  "license": "MIT",
   "dependencies": {
     "pug": "^3.0.3",
     "vintasend": "^0.1.4"
   },
   "devDependencies": {
-    "@types/pug": "^2.0.10"
+    "@types/pug": "^2.0.10",
+    "typescript": "^5.8.2"
   }
 }
