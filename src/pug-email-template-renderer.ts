@@ -1,11 +1,11 @@
-import type { ContextGenerator } from 'vintasend/src/services/notification-context-registry';
+import type { ContextGenerator } from 'vintasend/dist/services/notification-context-registry';
 import type {
   BaseEmailTemplateRenderer,
   EmailTemplate,
-} from 'vintasend/src/services/notification-template-renderers/base-email-template-renderer';
-import type { JsonObject } from 'vintasend/src/types/json-values';
-import type { Notification } from 'vintasend/src/types/notification';
-import type { Identifier } from 'vintasend/src/types/identifier';
+} from 'vintasend/dist/services/notification-template-renderers/base-email-template-renderer';
+import type { JsonObject } from 'vintasend/dist/types/json-values';
+import type { Notification } from 'vintasend/dist/types/notification';
+import type { Identifier } from 'vintasend/dist/types/identifier';
 
 import pug from 'pug';
 
