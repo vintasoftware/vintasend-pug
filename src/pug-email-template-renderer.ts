@@ -17,7 +17,7 @@ export class PugEmailTemplateRenderer<
 {
   constructor(private options: pug.Options = {}) {}
 
-  render(
+  async render(
     notification: Notification<AvailableContexts, NotificationIdType, UserIdType>,
     context: JsonObject,
   ): Promise<EmailTemplate> {
@@ -30,8 +30,8 @@ export class PugEmailTemplateRenderer<
     const subjectTemplate = pug.compileFile(notification.subjectTemplate, this.options);
     return new Promise((resolve) => {
       resolve({
-        subject: subjectTemplate(context || {}),
-        body: bodyTemplate(context || {}),
+        subject: subjectTemplate(context),
+        body: bodyTemplate(context),
       });
     });
   }
