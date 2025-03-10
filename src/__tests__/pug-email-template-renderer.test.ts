@@ -3,10 +3,17 @@ import { PugEmailTemplateRenderer } from '../index';
 import type { DatabaseNotification } from 'vintasend/dist/types/notification';
 import type { ContextGenerator } from 'vintasend/dist/services/notification-context-registry';
 
+
+type MockConfig = {
+  ContextMap: { testContext: ContextGenerator };
+  NotificationIdType: string;
+  UserIdType: string;
+};
+
 describe('PugEmailTemplateRenderer', () => {
   const fixturesPath = join(__dirname, 'fixtures');
-  let renderer: PugEmailTemplateRenderer<{ testContext: ContextGenerator }>;
-  let mockNotification: DatabaseNotification<{ testContext: ContextGenerator }, string, string> = {
+  let renderer: PugEmailTemplateRenderer<MockConfig>;
+  let mockNotification: DatabaseNotification<MockConfig> = {
     id: '123',
     notificationType: 'EMAIL' as const,
     contextName: 'testContext',

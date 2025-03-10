@@ -1,24 +1,21 @@
-import type { ContextGenerator } from 'vintasend/dist/services/notification-context-registry';
 import type {
   BaseEmailTemplateRenderer,
   EmailTemplate,
 } from 'vintasend/dist/services/notification-template-renderers/base-email-template-renderer';
 import type { JsonObject } from 'vintasend/dist/types/json-values';
-import type { Notification } from 'vintasend/dist/types/notification';
-import type { Identifier } from 'vintasend/dist/types/identifier';
+import type { DatabaseNotification } from 'vintasend/dist/types/notification';
+import type { BaseNotificationTypeConfig } from 'vintasend/dist/types/notification-type-config';
 
 import pug from 'pug';
 
 export class PugEmailTemplateRenderer<
-  AvailableContexts extends Record<string, ContextGenerator>,
-  NotificationIdType extends Identifier = Identifier,
-  UserIdType extends Identifier = Identifier,
-> implements BaseEmailTemplateRenderer<AvailableContexts, NotificationIdType, UserIdType>
+  Config extends BaseNotificationTypeConfig,
+> implements BaseEmailTemplateRenderer<Config>
 {
   constructor(private options: pug.Options = {}) {}
 
   async render(
-    notification: Notification<AvailableContexts, NotificationIdType, UserIdType>,
+    notification: DatabaseNotification<Config>,
     context: JsonObject,
   ): Promise<EmailTemplate> {
     const bodyTemplate = pug.compileFile(notification.bodyTemplate, this.options);
