@@ -1,5 +1,6 @@
 import { join } from 'node:path';
-import { PugEmailTemplateRenderer } from '../index';
+import { PugEmailTemplateRendererFactory } from '../index';
+import type { PugEmailTemplateRenderer } from '../index';
 import type { DatabaseNotification } from 'vintasend/dist/types/notification';
 import type { ContextGenerator } from 'vintasend/dist/services/notification-context-registry';
 
@@ -32,7 +33,7 @@ describe('PugEmailTemplateRenderer', () => {
   };
 
   beforeEach(() => {
-    renderer = new PugEmailTemplateRenderer();
+    renderer = new PugEmailTemplateRendererFactory<MockConfig>().create({});
     mockNotification = {
       id: '123',
       notificationType: 'EMAIL' as const,
@@ -50,6 +51,12 @@ describe('PugEmailTemplateRenderer', () => {
       readAt: null,
       sendAfter: new Date(),
     };
+  });
+
+  it('should default to empty object if no options passed', async () => {
+    renderer = new PugEmailTemplateRendererFactory<MockConfig>().create();
+    // biome-ignore lint/complexity/useLiteralKeys: accessing private attribute
+    expect(renderer['options']).toStrictEqual({});
   });
 
   it('should render email template with context', async () => {

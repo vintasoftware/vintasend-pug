@@ -12,7 +12,7 @@ export class PugEmailTemplateRenderer<
   Config extends BaseNotificationTypeConfig,
 > implements BaseEmailTemplateRenderer<Config>
 {
-  constructor(private options: pug.Options = {}) {}
+  constructor(private options: pug.Options) {}
 
   async render(
     notification: DatabaseNotification<Config>,
@@ -36,7 +36,7 @@ export class PugEmailTemplateRenderer<
 
 export class PugEmailTemplateRendererFactory <Config extends BaseNotificationTypeConfig> {
   create(
-    options: pug.Options,
+    options: pug.Options = {},
   ) {
     return new PugEmailTemplateRenderer<Config>(options);
   }
