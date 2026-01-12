@@ -1,9 +1,8 @@
 import { join } from 'node:path';
+import type { ContextGenerator } from 'vintasend/dist/services/notification-context-registry';
+import type { DatabaseNotification } from 'vintasend/dist/types/notification';
 import { PugEmailTemplateRendererFactory } from '../index';
 import type { PugEmailTemplateRenderer } from '../index';
-import type { DatabaseNotification } from 'vintasend/dist/types/notification';
-import type { ContextGenerator } from 'vintasend/dist/services/notification-context-registry';
-
 
 type MockConfig = {
   ContextMap: { testContext: ContextGenerator };
@@ -81,9 +80,7 @@ describe('PugEmailTemplateRenderer', () => {
       userId: 'user123',
     };
 
-    await expect(renderer.render(notification, {})).rejects.toThrow(
-      'Subject template is required'
-    );
+    await expect(renderer.render(notification, {})).rejects.toThrow('Subject template is required');
   });
 
   it('should handle empty context', async () => {
@@ -128,8 +125,6 @@ describe('PugEmailTemplateRenderer', () => {
     };
 
     // Create invalid template files with syntax that will cause runtime errors
-    await expect(
-      renderer.render(notification, { undefinedVariable: undefined })
-    ).rejects.toThrow();
+    await expect(renderer.render(notification, { undefinedVariable: undefined })).rejects.toThrow();
   });
 });

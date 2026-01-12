@@ -8,9 +8,8 @@ import type { BaseNotificationTypeConfig } from 'vintasend/dist/types/notificati
 
 import pug from 'pug';
 
-export class PugEmailTemplateRenderer<
-  Config extends BaseNotificationTypeConfig,
-> implements BaseEmailTemplateRenderer<Config>
+export class PugEmailTemplateRenderer<Config extends BaseNotificationTypeConfig>
+  implements BaseEmailTemplateRenderer<Config>
 {
   constructor(private options: pug.Options) {}
 
@@ -34,10 +33,8 @@ export class PugEmailTemplateRenderer<
   }
 }
 
-export class PugEmailTemplateRendererFactory <Config extends BaseNotificationTypeConfig> {
-  create(
-    options: pug.Options = {},
-  ) {
+export class PugEmailTemplateRendererFactory<Config extends BaseNotificationTypeConfig> {
+  create(options: pug.Options = {}) {
     return new PugEmailTemplateRenderer<Config>(options);
   }
 }
