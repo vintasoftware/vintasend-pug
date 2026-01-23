@@ -1,6 +1,6 @@
 {
   "name": "vintasend-pug",
-  "version": "0.4.0",
+  "version": "0.4.3",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -15,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "pug": "^3.0.3",
-    "vintasend": "^0.4.0"
+    "vintasend": "^0.4.3"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",

@@ -1,6 +1,7 @@
 import { join } from 'node:path';
 import type { ContextGenerator } from 'vintasend/dist/services/notification-context-registry';
 import type { DatabaseNotification } from 'vintasend/dist/types/notification';
+import type { BaseLogger } from 'vintasend/dist/services/loggers/base-logger';
 import { PugEmailTemplateRendererFactory } from '../index';
 import type { PugEmailTemplateRenderer } from '../index';
 
@@ -126,5 +127,18 @@ describe('PugEmailTemplateRenderer', () => {
 
     // Create invalid template files with syntax that will cause runtime errors
     await expect(renderer.render(notification, { undefinedVariable: undefined })).rejects.toThrow();
+  });
+
+  it('should support logger injection', () => {
+    const mockLogger: BaseLogger = {
+      info: jest.fn(),
+      error: jest.fn(),
+      warn: jest.fn(),
+    };
+
+    renderer.injectLogger(mockLogger);
+
+    // biome-ignore lint/complexity/useLiteralKeys: accessing private attribute
+    expect(renderer['logger']).toBe(mockLogger);
   });
 });

@@ -5,13 +5,23 @@ import type {
 import type { JsonObject } from 'vintasend/dist/types/json-values';
 import type { DatabaseNotification } from 'vintasend/dist/types/notification';
 import type { BaseNotificationTypeConfig } from 'vintasend/dist/types/notification-type-config';
+import type { BaseLogger } from 'vintasend/dist/services/loggers/base-logger';
 
 import pug from 'pug';
 
 export class PugEmailTemplateRenderer<Config extends BaseNotificationTypeConfig>
   implements BaseEmailTemplateRenderer<Config>
 {
+  private logger: BaseLogger | null = null;
+
   constructor(private options: pug.Options) {}
+
+  /**
+   * Inject logger (called by VintaSend when logger exists)
+   */
+  injectLogger(logger: BaseLogger): void {
+    this.logger = logger;
+  }
 
   async render(
     notification: DatabaseNotification<Config>,
