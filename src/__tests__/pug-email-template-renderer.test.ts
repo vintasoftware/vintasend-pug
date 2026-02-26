@@ -74,6 +74,37 @@ describe('PugEmailTemplateRenderer', () => {
     expect(result.body).toContain('Your message: Hello World');
   });
 
+  it('should render email template from template content', async () => {
+    const result = await renderer.renderFromTemplateContent(
+      mockNotification,
+      {
+        subject: 'span Welcome #{name}',
+        body: 'p Hello #{name}!\np Message: #{message}',
+      },
+      {
+        name: 'John',
+        message: 'Hello World',
+      },
+    );
+
+    expect(result.subject).toBe('<span>Welcome John</span>');
+    expect(result.body).toContain('<p>Hello John!</p>');
+    expect(result.body).toContain('<p>Message: Hello World</p>');
+  });
+
+  it('should throw when subject template content is missing', async () => {
+    await expect(
+      renderer.renderFromTemplateContent(
+        mockNotification,
+        {
+          subject: null,
+          body: 'p body',
+        },
+        {},
+      ),
+    ).rejects.toThrow('Subject template is required');
+  });
+
   it('should throw error when subject template is missing', async () => {
     const notification = {
       ...mockNotification,
