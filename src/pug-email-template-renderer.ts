@@ -1,5 +1,6 @@
 import type {
   BaseEmailTemplateRenderer,
+  EmailTemplateContent,
   EmailTemplate,
 } from 'vintasend/dist/services/notification-template-renderers/base-email-template-renderer';
 import type { JsonObject } from 'vintasend/dist/types/json-values';
@@ -46,6 +47,28 @@ export class PugEmailTemplateRenderer<Config extends BaseNotificationTypeConfig>
       this.logger?.info(`Email template rendered successfully for notification ${notification.id}`);
       resolve(rendered);
     });
+  }
+
+  async renderFromTemplateContent(
+    notification: DatabaseNotification<Config>,
+    templateContent: EmailTemplateContent,
+    context: JsonObject,
+  ): Promise<EmailTemplate> {
+    this.logger?.info(`Rendering email template from content for notification ${notification.id}`);
+
+    const bodyTemplate = pug.compile(templateContent.body, this.options);
+
+    if (!templateContent.subject) {
+      this.logger?.info('Subject template content missing');
+      throw new Error('Subject template is required');
+    }
+
+    const subjectTemplate = pug.compile(templateContent.subject, this.options);
+
+    return {
+      subject: subjectTemplate(context),
+      body: bodyTemplate(context),
+    };
   }
 }
 

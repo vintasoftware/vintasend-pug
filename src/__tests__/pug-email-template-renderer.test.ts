@@ -30,6 +30,7 @@ describe('PugEmailTemplateRenderer', () => {
     sentAt: null,
     readAt: null,
     sendAfter: new Date(),
+    gitCommitSha: null,
   };
 
   beforeEach(() => {
@@ -50,6 +51,7 @@ describe('PugEmailTemplateRenderer', () => {
       sentAt: null,
       readAt: null,
       sendAfter: new Date(),
+      gitCommitSha: null,
     };
   });
 
