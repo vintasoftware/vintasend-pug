@@ -4,6 +4,7 @@ import type { DatabaseNotification } from 'vintasend/dist/types/notification';
 import type { BaseLogger } from 'vintasend/dist/services/loggers/base-logger';
 import { PugEmailTemplateRendererFactory } from '../index';
 import type { PugEmailTemplateRenderer } from '../index';
+import { vi } from 'vitest';
 
 type MockConfig = {
   ContextMap: { testContext: ContextGenerator };
@@ -164,9 +165,9 @@ describe('PugEmailTemplateRenderer', () => {
 
   it('should support logger injection', () => {
     const mockLogger: BaseLogger = {
-      info: jest.fn(),
-      error: jest.fn(),
-      warn: jest.fn(),
+      info: vi.fn(),
+      error: vi.fn(),
+      warn: vi.fn(),
     };
 
     renderer.injectLogger(mockLogger);
