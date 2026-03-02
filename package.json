@@ -1,6 +1,6 @@
 {
   "name": "vintasend-pug",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -11,13 +11,17 @@
     "test:coverage": "vitest run --coverage"
   },
   "files": [
-    "dist"
+    "dist",
+    "src/scripts/compile-pug-templates.ts"
   ],
+  "bin": {
+    "compile-pug-templates": "dist/scripts/compile-pug-templates.js"
+  },
   "author": "Hugo Bessa",
   "license": "MIT",
   "dependencies": {
     "pug": "^3.0.3",
-    "vintasend": "^0.9.1"
+    "vintasend": "^0.10.0"
   },
   "devDependencies": {
     "@types/pug": "^2.0.10",
