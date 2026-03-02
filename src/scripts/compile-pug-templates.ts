@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 interface PugTemplatesMap {
   [key: string]: string;
@@ -9,7 +9,11 @@ interface PugTemplatesMap {
 /**
  * Recursively finds all .pug files in a directory
  */
-function findPugFiles(dir: string, baseDir: string, files: Map<string, string> = new Map()): Map<string, string> {
+function findPugFiles(
+  dir: string,
+  baseDir: string,
+  files: Map<string, string> = new Map(),
+): Map<string, string> {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
 
   for (const entry of entries) {
@@ -34,7 +38,10 @@ function findPugFiles(dir: string, baseDir: string, files: Map<string, string> =
 /**
  * Main function to compile pug templates to JSON
  */
-function compilePugTemplates(inputDir: string = './templates', outputFile: string = 'compiled-templates.json'): void {
+function compilePugTemplates(
+  inputDir: string = './templates',
+  outputFile: string = 'compiled-templates.json',
+): void {
   // Validate input directory exists
   if (!fs.existsSync(inputDir)) {
     console.error(`Error: Directory "${inputDir}" does not exist.`);

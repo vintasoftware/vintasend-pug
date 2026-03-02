@@ -1,6 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import { execSync } from 'child_process';
+import { execSync } from 'node:child_process';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 describe('compile-pug-templates script', () => {
   const scriptPath = path.join(__dirname, '../compile-pug-templates.ts');
@@ -58,7 +58,7 @@ describe('compile-pug-templates script', () => {
     fs.writeFileSync(path.join(templatesDir, 'emails', 'welcome.pug'), 'p Welcome email');
     fs.writeFileSync(
       path.join(templatesDir, 'emails', 'notifications', 'alert.pug'),
-      'p Alert notification'
+      'p Alert notification',
     );
 
     // Run the script

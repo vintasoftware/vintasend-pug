@@ -1,14 +1,13 @@
+import pug from 'pug';
 import type {
   BaseEmailTemplateRenderer,
-  EmailTemplateContent,
+  BaseLogger,
+  BaseNotificationTypeConfig,
+  DatabaseNotification,
   EmailTemplate,
-} from 'vintasend/dist/services/notification-template-renderers/base-email-template-renderer';
-import type { JsonObject } from 'vintasend/dist/types/json-values';
-import type { DatabaseNotification } from 'vintasend/dist/types/notification';
-import type { BaseNotificationTypeConfig } from 'vintasend/dist/types/notification-type-config';
-import type { BaseLogger } from 'vintasend/dist/services/loggers/base-logger';
-
-import pug from 'pug';
+  EmailTemplateContent,
+  JsonObject,
+} from 'vintasend';
 
 export class PugEmailTemplateRenderer<Config extends BaseNotificationTypeConfig>
   implements BaseEmailTemplateRenderer<Config>

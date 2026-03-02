@@ -1,7 +1,8 @@
-import type { ContextGenerator } from 'vintasend/dist/services/notification-context-registry';
-import type { DatabaseNotification } from 'vintasend/dist/types/notification';
-import type { BaseLogger } from 'vintasend/dist/services/loggers/base-logger';
-import { PugInlineEmailTemplateRendererFactory, PugInlineEmailTemplateRenderer } from '../pug-inline-email-template-renderer';
+import type { BaseLogger, ContextGenerator, DatabaseNotification } from 'vintasend';
+import {
+  type PugInlineEmailTemplateRenderer,
+  PugInlineEmailTemplateRendererFactory,
+} from '../pug-inline-email-template-renderer';
 
 type MockConfig = {
   ContextMap: { testContext: ContextGenerator };
@@ -126,7 +127,9 @@ describe('PugInlineEmailTemplateRenderer', () => {
       subjectTemplate: 'non-existent-subject',
     };
 
-    await expect(renderer.render(notification, {})).rejects.toThrow('Subject template "non-existent-subject" not found in templates');
+    await expect(renderer.render(notification, {})).rejects.toThrow(
+      'Subject template "non-existent-subject" not found in templates',
+    );
   });
 
   it('should throw error when body template not found', async () => {
@@ -135,7 +138,9 @@ describe('PugInlineEmailTemplateRenderer', () => {
       bodyTemplate: 'non-existent-body',
     };
 
-    await expect(renderer.render(notification, {})).rejects.toThrow('Body template "non-existent-body" not found in templates');
+    await expect(renderer.render(notification, {})).rejects.toThrow(
+      'Body template "non-existent-body" not found in templates',
+    );
   });
 
   it('should handle template runtime errors', async () => {
@@ -154,7 +159,9 @@ describe('PugInlineEmailTemplateRenderer', () => {
       bodyTemplate: '',
     };
 
-    await expect(renderer.render(notification, { name: 'Test' })).rejects.toThrow('Body template is required');
+    await expect(renderer.render(notification, { name: 'Test' })).rejects.toThrow(
+      'Body template is required',
+    );
   });
 
   it('should throw error when subjectTemplate is empty', async () => {
@@ -163,7 +170,9 @@ describe('PugInlineEmailTemplateRenderer', () => {
       subjectTemplate: '',
     };
 
-    await expect(renderer.render(notification, { name: 'Test' })).rejects.toThrow('Subject template is required');
+    await expect(renderer.render(notification, { name: 'Test' })).rejects.toThrow(
+      'Subject template is required',
+    );
   });
 
   it('should create renderer with empty templates object', () => {
@@ -180,7 +189,6 @@ describe('PugInlineEmailTemplateRenderer', () => {
 
     renderer.injectLogger(mockLogger);
 
-    // biome-ignore lint/complexity/useLiteralKeys: accessing private attribute
     expect((renderer as any).logger).toBe(mockLogger);
   });
 
@@ -200,6 +208,8 @@ describe('PugInlineEmailTemplateRenderer', () => {
     };
 
     await expect(renderer.render(notification, { undefinedVariable: undefined })).rejects.toThrow();
-    expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('[PugInlineEmailTemplateRenderer] Error rendering body template'));
+    expect(mockLogger.error).toHaveBeenCalledWith(
+      expect.stringContaining('[PugInlineEmailTemplateRenderer] Error rendering body template'),
+    );
   });
 });

@@ -1,11 +1,12 @@
 import * as pug from 'pug';
-import { BaseEmailTemplateRenderer } from 'vintasend';
-import type { EmailTemplateContent } from 'vintasend/dist/services/notification-template-renderers/base-email-template-renderer';
-import type { JsonObject } from 'vintasend/dist/types/json-values';
-import type { DatabaseNotification } from 'vintasend/dist/types/notification';
-import type { BaseNotificationTypeConfig } from 'vintasend/dist/types/notification-type-config';
-import type { BaseLogger } from 'vintasend/dist/services/loggers/base-logger';
-
+import type {
+  BaseEmailTemplateRenderer,
+  BaseLogger,
+  BaseNotificationTypeConfig,
+  DatabaseNotification,
+  EmailTemplateContent,
+  JsonObject,
+} from 'vintasend';
 
 /**
  * Custom email template renderer that compiles Pug templates from strings
@@ -33,7 +34,7 @@ export class PugInlineEmailTemplateRenderer<Config extends BaseNotificationTypeC
 
   async render(
     notification: DatabaseNotification<Config>,
-    context: JsonObject
+    context: JsonObject,
   ): Promise<{ subject: string; body: string }> {
     // Check if body template is provided
     const bodyTemplateKey = notification.bodyTemplate;
@@ -110,7 +111,9 @@ export class PugInlineEmailTemplateRenderer<Config extends BaseNotificationTypeC
       subject = subjectTemplate(context);
     } catch (error) {
       if (this.logger) {
-        this.logger.error('[PugInlineEmailTemplateRenderer] Error rendering subject template content');
+        this.logger.error(
+          '[PugInlineEmailTemplateRenderer] Error rendering subject template content',
+        );
       }
       throw error;
     }

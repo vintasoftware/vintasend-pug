@@ -1,10 +1,8 @@
 import { join } from 'node:path';
-import type { ContextGenerator } from 'vintasend/dist/services/notification-context-registry';
-import type { DatabaseNotification } from 'vintasend/dist/types/notification';
-import type { BaseLogger } from 'vintasend/dist/services/loggers/base-logger';
-import { PugEmailTemplateRendererFactory } from '../index';
-import type { PugEmailTemplateRenderer } from '../index';
+import type { BaseLogger, ContextGenerator, DatabaseNotification } from 'vintasend';
 import { vi } from 'vitest';
+import type { PugEmailTemplateRenderer } from '../index';
+import { PugEmailTemplateRendererFactory } from '../index';
 
 type MockConfig = {
   ContextMap: { testContext: ContextGenerator };
