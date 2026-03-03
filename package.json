@@ -1,6 +1,6 @@
 {
   "name": "vintasend-pug",
-  "version": "0.11.2-alpha5",
+  "version": "0.11.2-alpha6",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -24,7 +24,7 @@
   "license": "MIT",
   "dependencies": {
     "pug": "^3.0.3",
-    "vintasend": "^0.11.2-alpha5"
+    "vintasend": "^0.11.2-alpha6"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.5",
