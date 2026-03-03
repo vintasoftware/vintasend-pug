@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import type { BaseLogger, ContextGenerator, DatabaseNotification } from 'vintasend';
-import { vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { PugEmailTemplateRenderer } from '../index';
 import { PugEmailTemplateRendererFactory } from '../index';
 

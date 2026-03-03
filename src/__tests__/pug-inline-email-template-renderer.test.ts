@@ -1,4 +1,5 @@
 import type { BaseLogger, ContextGenerator, DatabaseNotification } from 'vintasend';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   type PugInlineEmailTemplateRenderer,
   PugInlineEmailTemplateRendererFactory,
