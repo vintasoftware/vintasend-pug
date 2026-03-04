@@ -19,7 +19,7 @@ export class PugInlineEmailTemplateRenderer<Config extends BaseNotificationTypeC
   implements BaseEmailTemplateRenderer<Config>
 {
   private templates: Record<string, string>;
-  private logger: BaseLogger | null = null;
+  logger: BaseLogger | null = null;
 
   constructor(generatedTemplates: Record<string, string>) {
     this.templates = generatedTemplates;

@@ -12,7 +12,7 @@ import type {
 export class PugEmailTemplateRenderer<Config extends BaseNotificationTypeConfig>
   implements BaseEmailTemplateRenderer<Config>
 {
-  private logger: BaseLogger | null = null;
+  logger: BaseLogger | null = null;
 
   constructor(private options: pug.Options) {}
 
