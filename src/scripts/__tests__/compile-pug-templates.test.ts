@@ -1,6 +1,7 @@
 import { execSync } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 describe('compile-pug-templates script', () => {
   const scriptPath = path.join(__dirname, '../compile-pug-templates.ts');
@@ -33,7 +34,7 @@ describe('compile-pug-templates script', () => {
     fs.writeFileSync(path.join(templatesDir, 'subject.pug'), '| Welcome #{user}');
 
     // Run the script
-    execSync(`npx ts-node ${scriptPath} ${templatesDir} ${outputFile}`, {
+    execSync(`npx ts-node --esm ${scriptPath} ${templatesDir} ${outputFile}`, {
       stdio: 'pipe',
     });
 
@@ -62,7 +63,7 @@ describe('compile-pug-templates script', () => {
     );
 
     // Run the script
-    execSync(`npx ts-node ${scriptPath} ${templatesDir} ${outputFile}`, {
+    execSync(`npx ts-node --esm ${scriptPath} ${templatesDir} ${outputFile}`, {
       stdio: 'pipe',
     });
 
@@ -86,7 +87,7 @@ describe('compile-pug-templates script', () => {
     fs.writeFileSync(path.join(templatesDir, 'readme.md'), '# README');
 
     // Run the script
-    execSync(`npx ts-node ${scriptPath} ${templatesDir} ${outputFile}`, {
+    execSync(`npx ts-node --esm ${scriptPath} ${templatesDir} ${outputFile}`, {
       stdio: 'pipe',
     });
 
@@ -103,7 +104,7 @@ describe('compile-pug-templates script', () => {
     fs.mkdirSync(templatesDir, { recursive: true });
 
     // Run the script
-    execSync(`npx ts-node ${scriptPath} ${templatesDir} ${outputFile}`, {
+    execSync(`npx ts-node --esm ${scriptPath} ${templatesDir} ${outputFile}`, {
       stdio: 'pipe',
     });
 
@@ -119,7 +120,7 @@ describe('compile-pug-templates script', () => {
 
     // Verify the script exits with error
     expect(() => {
-      execSync(`npx ts-node ${scriptPath} ${nonExistentDir} ${outputFile}`, {
+      execSync(`npx ts-node --esm ${scriptPath} ${nonExistentDir} ${outputFile}`, {
         stdio: 'pipe',
       });
     }).toThrow();
@@ -137,7 +138,7 @@ describe('compile-pug-templates script', () => {
 
     // Verify the script exits with error
     expect(() => {
-      execSync(`npx ts-node ${scriptPath} ${notADir} ${outputFile}`, {
+      execSync(`npx ts-node --esm ${scriptPath} ${notADir} ${outputFile}`, {
         stdio: 'pipe',
       });
     }).toThrow();
@@ -163,7 +164,7 @@ describe('compile-pug-templates script', () => {
     fs.writeFileSync(path.join(templatesDir, 'complex.pug'), templateContent);
 
     // Run the script
-    execSync(`npx ts-node ${scriptPath} ${templatesDir} ${outputFile}`, {
+    execSync(`npx ts-node --esm ${scriptPath} ${templatesDir} ${outputFile}`, {
       stdio: 'pipe',
     });
 
@@ -183,7 +184,7 @@ describe('compile-pug-templates script', () => {
     fs.writeFileSync(path.join(templatesDir, 'user_profile.pug'), 'p Profile');
 
     // Run the script
-    execSync(`npx ts-node ${scriptPath} ${templatesDir} ${outputFile}`, {
+    execSync(`npx ts-node --esm ${scriptPath} ${templatesDir} ${outputFile}`, {
       stdio: 'pipe',
     });
 
@@ -201,7 +202,7 @@ describe('compile-pug-templates script', () => {
     fs.writeFileSync(path.join(templatesDir, 'test.pug'), 'p Test');
 
     // Run the script
-    execSync(`npx ts-node ${scriptPath} ${templatesDir} ${outputFile}`, {
+    execSync(`npx ts-node --esm ${scriptPath} ${templatesDir} ${outputFile}`, {
       stdio: 'pipe',
     });
 
