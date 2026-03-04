@@ -1,6 +1,6 @@
 {
   "name": "vintasend-pug",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "description": "",
   "type": "module",
   "main": "dist/index.js",
@@ -25,10 +25,11 @@
   "license": "MIT",
   "dependencies": {
     "pug": "^3.0.3",
-    "vintasend": "^0.13.1"
+    "vintasend": "^0.13.2"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.5",
+    "@types/node": "25.3.3",
     "@types/pug": "^2.0.10",
     "@vitest/coverage-v8": "4.0.18",
     "husky": "^9.1.7",
