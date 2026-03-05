@@ -1,10 +1,9 @@
-import { execSync } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { compilePugTemplates } from '../compile-pug-templates';
 
 describe('compile-pug-templates script', () => {
-  const scriptPath = path.join(__dirname, '../compile-pug-templates.ts');
   const testTempDir = path.join(__dirname, '__temp__');
 
   beforeEach(() => {
@@ -34,9 +33,7 @@ describe('compile-pug-templates script', () => {
     fs.writeFileSync(path.join(templatesDir, 'subject.pug'), '| Welcome #{user}');
 
     // Run the script
-    execSync(`npx ts-node --esm ${scriptPath} ${templatesDir} ${outputFile}`, {
-      stdio: 'pipe',
-    });
+    compilePugTemplates(templatesDir, outputFile);
 
     // Verify output file exists
     expect(fs.existsSync(outputFile)).toBe(true);
@@ -63,9 +60,7 @@ describe('compile-pug-templates script', () => {
     );
 
     // Run the script
-    execSync(`npx ts-node --esm ${scriptPath} ${templatesDir} ${outputFile}`, {
-      stdio: 'pipe',
-    });
+    compilePugTemplates(templatesDir, outputFile);
 
     // Verify content
     const result = JSON.parse(fs.readFileSync(outputFile, 'utf-8'));
@@ -87,9 +82,7 @@ describe('compile-pug-templates script', () => {
     fs.writeFileSync(path.join(templatesDir, 'readme.md'), '# README');
 
     // Run the script
-    execSync(`npx ts-node --esm ${scriptPath} ${templatesDir} ${outputFile}`, {
-      stdio: 'pipe',
-    });
+    compilePugTemplates(templatesDir, outputFile);
 
     // Verify only .pug files are included
     const result = JSON.parse(fs.readFileSync(outputFile, 'utf-8'));
@@ -104,9 +97,7 @@ describe('compile-pug-templates script', () => {
     fs.mkdirSync(templatesDir, { recursive: true });
 
     // Run the script
-    execSync(`npx ts-node --esm ${scriptPath} ${templatesDir} ${outputFile}`, {
-      stdio: 'pipe',
-    });
+    compilePugTemplates(templatesDir, outputFile);
 
     // Verify output file exists and is empty object
     expect(fs.existsSync(outputFile)).toBe(true);
@@ -120,9 +111,7 @@ describe('compile-pug-templates script', () => {
 
     // Verify the script exits with error
     expect(() => {
-      execSync(`npx ts-node --esm ${scriptPath} ${nonExistentDir} ${outputFile}`, {
-        stdio: 'pipe',
-      });
+      compilePugTemplates(nonExistentDir, outputFile);
     }).toThrow();
 
     // Verify output file was not created
@@ -138,9 +127,7 @@ describe('compile-pug-templates script', () => {
 
     // Verify the script exits with error
     expect(() => {
-      execSync(`npx ts-node --esm ${scriptPath} ${notADir} ${outputFile}`, {
-        stdio: 'pipe',
-      });
+      compilePugTemplates(notADir, outputFile);
     }).toThrow();
   });
 
@@ -164,9 +151,7 @@ describe('compile-pug-templates script', () => {
     fs.writeFileSync(path.join(templatesDir, 'complex.pug'), templateContent);
 
     // Run the script
-    execSync(`npx ts-node --esm ${scriptPath} ${templatesDir} ${outputFile}`, {
-      stdio: 'pipe',
-    });
+    compilePugTemplates(templatesDir, outputFile);
 
     // Verify content is preserved exactly
     const result = JSON.parse(fs.readFileSync(outputFile, 'utf-8'));
@@ -184,9 +169,7 @@ describe('compile-pug-templates script', () => {
     fs.writeFileSync(path.join(templatesDir, 'user_profile.pug'), 'p Profile');
 
     // Run the script
-    execSync(`npx ts-node --esm ${scriptPath} ${templatesDir} ${outputFile}`, {
-      stdio: 'pipe',
-    });
+    compilePugTemplates(templatesDir, outputFile);
 
     // Verify files are included with correct names
     const result = JSON.parse(fs.readFileSync(outputFile, 'utf-8'));
@@ -202,9 +185,7 @@ describe('compile-pug-templates script', () => {
     fs.writeFileSync(path.join(templatesDir, 'test.pug'), 'p Test');
 
     // Run the script
-    execSync(`npx ts-node --esm ${scriptPath} ${templatesDir} ${outputFile}`, {
-      stdio: 'pipe',
-    });
+    compilePugTemplates(templatesDir, outputFile);
 
     // Read raw file content
     const rawContent = fs.readFileSync(outputFile, 'utf-8');

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 interface PugTemplatesMap {
   [key: string]: string;
@@ -38,19 +39,17 @@ function findPugFiles(
 /**
  * Main function to compile pug templates to JSON
  */
-function compilePugTemplates(
+export function compilePugTemplates(
   inputDir: string = './templates',
   outputFile: string = 'compiled-templates.json',
 ): void {
   // Validate input directory exists
   if (!fs.existsSync(inputDir)) {
-    console.error(`Error: Directory "${inputDir}" does not exist.`);
-    process.exit(1);
+    throw new Error(`Directory "${inputDir}" does not exist.`);
   }
 
   if (!fs.statSync(inputDir).isDirectory()) {
-    console.error(`Error: "${inputDir}" is not a directory.`);
-    process.exit(1);
+    throw new Error(`"${inputDir}" is not a directory.`);
   }
 
   console.log(`Searching for .pug files in: ${inputDir}`);
@@ -74,10 +73,7 @@ function compilePugTemplates(
   console.log(`\nSuccessfully compiled templates to: ${outputFile}`);
 }
 
-// Parse command line arguments
-const args = process.argv.slice(2);
-
-if (args.includes('--help') || args.includes('-h')) {
+function printHelp(): void {
   console.log('Usage: compile-pug-templates [input-directory] [output-file]');
   console.log('');
   console.log('Arguments:');
@@ -88,10 +84,28 @@ if (args.includes('--help') || args.includes('-h')) {
   console.log('  compile-pug-templates');
   console.log('  compile-pug-templates ./templates');
   console.log('  compile-pug-templates ./templates ./compiled-templates.json');
-  process.exit(0);
 }
 
-const [inputDir, outputFile] = args;
+export function runCli(args: string[] = process.argv.slice(2)): void {
+  if (args.includes('--help') || args.includes('-h')) {
+    printHelp();
+    return;
+  }
 
-// Run the compilation
-compilePugTemplates(inputDir, outputFile);
+  const [inputDir, outputFile] = args;
+
+  try {
+    compilePugTemplates(inputDir, outputFile);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(`Error: ${message}`);
+    process.exit(1);
+  }
+}
+
+const isExecutedDirectly =
+  process.argv[1] !== undefined && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
+
+if (isExecutedDirectly) {
+  runCli(process.argv.slice(2));
+}
