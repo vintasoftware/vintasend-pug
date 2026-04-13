@@ -104,7 +104,8 @@ export function runCli(args: string[] = process.argv.slice(2)): void {
 }
 
 const isExecutedDirectly =
-  process.argv[1] !== undefined && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
+  process.argv[1] !== undefined &&
+  fileURLToPath(import.meta.url) === fs.realpathSync(process.argv[1]);
 
 if (isExecutedDirectly) {
   runCli(process.argv.slice(2));
