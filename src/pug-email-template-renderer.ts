@@ -8,6 +8,7 @@ import type {
   EmailTemplateContent,
   JsonObject,
 } from 'vintasend';
+import { log, logId, logLabel } from 'vintasend';
 
 export class PugEmailTemplateRenderer<Config extends BaseNotificationTypeConfig>
   implements BaseEmailTemplateRenderer<Config>
@@ -27,23 +28,25 @@ export class PugEmailTemplateRenderer<Config extends BaseNotificationTypeConfig>
     notification: DatabaseNotification<Config>,
     context: JsonObject,
   ): Promise<EmailTemplate> {
-    this.logger?.info(`Rendering email template for notification ${notification.id}`);
-    this.logger?.info(`Compiling body template: ${notification.bodyTemplate}`);
+    this.logger?.info(log`Rendering email template for notification ${logId(notification.id)}`);
+    this.logger?.info(log`Compiling body template: ${logLabel(notification.bodyTemplate)}`);
     const bodyTemplate = pug.compileFile(notification.bodyTemplate, this.options);
 
     if (!notification.subjectTemplate) {
-      this.logger?.info('Subject template missing');
+      this.logger?.info(log`Subject template missing`);
       throw new Error('Subject template is required');
     }
 
-    this.logger?.info(`Compiling subject template: ${notification.subjectTemplate}`);
+    this.logger?.info(log`Compiling subject template: ${logLabel(notification.subjectTemplate)}`);
     const subjectTemplate = pug.compileFile(notification.subjectTemplate, this.options);
     return new Promise((resolve) => {
       const rendered = {
         subject: subjectTemplate(context),
         body: bodyTemplate(context),
       };
-      this.logger?.info(`Email template rendered successfully for notification ${notification.id}`);
+      this.logger?.info(
+        log`Email template rendered successfully for notification ${logId(notification.id)}`,
+      );
       resolve(rendered);
     });
   }
@@ -53,12 +56,14 @@ export class PugEmailTemplateRenderer<Config extends BaseNotificationTypeConfig>
     templateContent: EmailTemplateContent,
     context: JsonObject,
   ): Promise<EmailTemplate> {
-    this.logger?.info(`Rendering email template from content for notification ${notification.id}`);
+    this.logger?.info(
+      log`Rendering email template from content for notification ${logId(notification.id)}`,
+    );
 
     const bodyTemplate = pug.compile(templateContent.body, this.options);
 
     if (!templateContent.subject) {
-      this.logger?.info('Subject template content missing');
+      this.logger?.info(log`Subject template content missing`);
       throw new Error('Subject template is required');
     }
 

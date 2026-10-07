@@ -1,5 +1,6 @@
 import { join } from 'node:path';
 import type { BaseLogger, ContextGenerator, DatabaseNotification } from 'vintasend';
+import { renderLogMessage } from 'vintasend';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { PugEmailTemplateRenderer } from '../index';
 import { PugEmailTemplateRendererFactory } from '../index';
@@ -172,5 +173,65 @@ describe('PugEmailTemplateRenderer', () => {
 
     // biome-ignore lint/complexity/useLiteralKeys: accessing private attribute
     expect(renderer['logger']).toBe(mockLogger);
+  });
+
+  describe('log lines never carry template content, context or error messages', () => {
+    // Synthetic data, not real PHI.
+    const syntheticContext = {
+      name: 'Jane Synthetic',
+      message: 'jane.synthetic@example.com',
+      patientName: 'Jane Synthetic',
+      patientEmail: 'jane.synthetic@example.com',
+    };
+    const forbidden = ['Jane Synthetic', 'jane.synthetic@example.com', 'patientName', 'throw new'];
+
+    function createLogger() {
+      return { info: vi.fn(), warn: vi.fn(), error: vi.fn() } satisfies BaseLogger;
+    }
+
+    function renderedLines(logger: ReturnType<typeof createLogger>): string[] {
+      return [logger.info, logger.warn, logger.error].flatMap((fn) =>
+        fn.mock.calls.map((call) => renderLogMessage(call[0])),
+      );
+    }
+
+    it('logs only ids and template paths when rendering template files', async () => {
+      const logger = createLogger();
+      renderer.injectLogger(logger);
+
+      const result = await renderer.render(mockNotification, syntheticContext);
+
+      expect(result.body).toContain('Jane Synthetic');
+      expect(renderedLines(logger)).toEqual([
+        'Rendering email template for notification 123',
+        `Compiling body template: ${mockNotification.bodyTemplate}`,
+        `Compiling subject template: ${mockNotification.subjectTemplate}`,
+        'Email template rendered successfully for notification 123',
+      ]);
+    });
+
+    it('does not log the error message when template content throws', async () => {
+      const logger = createLogger();
+      renderer.injectLogger(logger);
+
+      await expect(
+        renderer.renderFromTemplateContent(
+          mockNotification,
+          {
+            body: "- throw new Error('Cannot render for ' + patientName + ' <' + patientEmail + '>')",
+            subject: '| Hi #{patientName}',
+          },
+          syntheticContext,
+        ),
+      ).rejects.toThrow('Jane Synthetic');
+
+      const lines = renderedLines(logger);
+      expect(lines).toEqual(['Rendering email template from content for notification 123']);
+      for (const line of lines) {
+        for (const value of forbidden) {
+          expect(line).not.toContain(value);
+        }
+      }
+    });
   });
 });

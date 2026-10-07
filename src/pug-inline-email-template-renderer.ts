@@ -7,6 +7,7 @@ import type {
   EmailTemplateContent,
   JsonObject,
 } from 'vintasend';
+import { log, logError, logId, logLabel } from 'vintasend';
 
 /**
  * Custom email template renderer that compiles Pug templates from strings
@@ -61,7 +62,9 @@ export class PugInlineEmailTemplateRenderer<Config extends BaseNotificationTypeC
       body = bodyTemplate(context);
     } catch (error) {
       if (this.logger) {
-        this.logger.error('[PugInlineEmailTemplateRenderer] Error rendering body template');
+        this.logger.error(
+          log`[PugInlineEmailTemplateRenderer] Error rendering body template ${logLabel(bodyTemplateKey)} for notification ${logId(notification.id)}: ${logError(error)}`,
+        );
       }
       throw error;
     }
@@ -73,7 +76,9 @@ export class PugInlineEmailTemplateRenderer<Config extends BaseNotificationTypeC
       subject = subjectTemplate(context);
     } catch (error) {
       if (this.logger) {
-        this.logger.error('[PugInlineEmailTemplateRenderer] Error rendering subject template');
+        this.logger.error(
+          log`[PugInlineEmailTemplateRenderer] Error rendering subject template ${logLabel(subjectTemplateKey)} for notification ${logId(notification.id)}: ${logError(error)}`,
+        );
       }
       throw error;
     }
@@ -87,7 +92,7 @@ export class PugInlineEmailTemplateRenderer<Config extends BaseNotificationTypeC
     context: JsonObject,
   ): Promise<{ subject: string; body: string }> {
     this.logger?.info(
-      `[PugInlineEmailTemplateRenderer] Rendering template from content for notification ${notification.id}`,
+      log`[PugInlineEmailTemplateRenderer] Rendering template from content for notification ${logId(notification.id)}`,
     );
 
     let body: string;
@@ -96,7 +101,9 @@ export class PugInlineEmailTemplateRenderer<Config extends BaseNotificationTypeC
       body = bodyTemplate(context);
     } catch (error) {
       if (this.logger) {
-        this.logger.error('[PugInlineEmailTemplateRenderer] Error rendering body template content');
+        this.logger.error(
+          log`[PugInlineEmailTemplateRenderer] Error rendering body template content for notification ${logId(notification.id)}: ${logError(error)}`,
+        );
       }
       throw error;
     }
@@ -112,7 +119,7 @@ export class PugInlineEmailTemplateRenderer<Config extends BaseNotificationTypeC
     } catch (error) {
       if (this.logger) {
         this.logger.error(
-          '[PugInlineEmailTemplateRenderer] Error rendering subject template content',
+          log`[PugInlineEmailTemplateRenderer] Error rendering subject template content for notification ${logId(notification.id)}: ${logError(error)}`,
         );
       }
       throw error;

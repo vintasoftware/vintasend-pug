@@ -1,4 +1,5 @@
 import type { BaseLogger, ContextGenerator, DatabaseNotification } from 'vintasend';
+import { logMessageMatching, renderLogMessage } from 'vintasend';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   type PugInlineEmailTemplateRenderer,
@@ -210,7 +211,126 @@ describe('PugInlineEmailTemplateRenderer', () => {
 
     await expect(renderer.render(notification, { undefinedVariable: undefined })).rejects.toThrow();
     expect(mockLogger.error).toHaveBeenCalledWith(
-      expect.stringContaining('[PugInlineEmailTemplateRenderer] Error rendering body template'),
+      logMessageMatching(
+        '[PugInlineEmailTemplateRenderer] Error rendering body template invalid-template for notification 123: TypeError',
+      ),
     );
+  });
+
+  describe('log lines never carry template content, context or error messages', () => {
+    // Synthetic data, not real PHI.
+    const syntheticContext = {
+      patientName: 'Jane Synthetic',
+      patientEmail: 'jane.synthetic@example.com',
+    };
+    const forbidden = ['Jane Synthetic', 'jane.synthetic@example.com', 'patientName', 'throw new'];
+    const throwingTemplate =
+      "- throw new Error('Cannot render for ' + patientName + ' <' + patientEmail + '>')";
+
+    function createLogger() {
+      return { info: vi.fn(), warn: vi.fn(), error: vi.fn() } satisfies BaseLogger;
+    }
+
+    function renderedLines(logger: ReturnType<typeof createLogger>): string[] {
+      return [logger.info, logger.warn, logger.error].flatMap((fn) =>
+        fn.mock.calls.map((call) => renderLogMessage(call[0])),
+      );
+    }
+
+    function expectNoSyntheticPhi(lines: string[]) {
+      for (const line of lines) {
+        for (const value of forbidden) {
+          expect(line).not.toContain(value);
+        }
+      }
+    }
+
+    it('drops the error message when a stored body template throws', async () => {
+      const phiRenderer = new PugInlineEmailTemplateRendererFactory<MockConfig>().create({
+        'throwing-body': throwingTemplate,
+        'test-subject': templates['test-subject'],
+      });
+      const logger = createLogger();
+      phiRenderer.injectLogger(logger);
+
+      const error = await phiRenderer
+        .render({ ...mockNotification, bodyTemplate: 'throwing-body' }, syntheticContext)
+        .catch((e: unknown) => e);
+
+      // The thrown error does quote the context, which is why it must not be logged.
+      expect((error as Error).message).toContain('Jane Synthetic');
+      expect(logger.error).toHaveBeenCalledWith(
+        logMessageMatching(
+          '[PugInlineEmailTemplateRenderer] Error rendering body template throwing-body for notification 123: Error',
+        ),
+      );
+      expectNoSyntheticPhi(renderedLines(logger));
+    });
+
+    it('drops the error message when a stored subject template throws', async () => {
+      const phiRenderer = new PugInlineEmailTemplateRendererFactory<MockConfig>().create({
+        'test-notification': templates['test-notification'],
+        'throwing-subject': throwingTemplate,
+      });
+      const logger = createLogger();
+      phiRenderer.injectLogger(logger);
+
+      await expect(
+        phiRenderer.render(
+          { ...mockNotification, subjectTemplate: 'throwing-subject' },
+          { ...syntheticContext, name: 'Jane Synthetic', message: 'jane.synthetic@example.com' },
+        ),
+      ).rejects.toThrow('Jane Synthetic');
+      expect(logger.error).toHaveBeenCalledTimes(1);
+      expectNoSyntheticPhi(renderedLines(logger));
+    });
+
+    it('drops the error message when template content fails to render', async () => {
+      const logger = createLogger();
+      renderer.injectLogger(logger);
+
+      await expect(
+        renderer.renderFromTemplateContent(
+          mockNotification,
+          { body: throwingTemplate, subject: '| Hi #{patientName}' },
+          syntheticContext,
+        ),
+      ).rejects.toThrow('jane.synthetic@example.com');
+      await expect(
+        renderer.renderFromTemplateContent(
+          mockNotification,
+          { body: 'p Hello #{patientName}', subject: throwingTemplate },
+          syntheticContext,
+        ),
+      ).rejects.toThrow('jane.synthetic@example.com');
+
+      expect(logger.error).toHaveBeenCalledWith(
+        logMessageMatching(
+          '[PugInlineEmailTemplateRenderer] Error rendering body template content for notification 123: Error',
+        ),
+      );
+      expect(logger.error).toHaveBeenCalledWith(
+        logMessageMatching(
+          '[PugInlineEmailTemplateRenderer] Error rendering subject template content for notification 123: Error',
+        ),
+      );
+      expectNoSyntheticPhi(renderedLines(logger));
+    });
+
+    it('does not log the rendered output on success', async () => {
+      const logger = createLogger();
+      renderer.injectLogger(logger);
+
+      const result = await renderer.renderFromTemplateContent(
+        mockNotification,
+        { body: 'p Hello #{patientName} <#{patientEmail}>', subject: '| Hi #{patientName}' },
+        syntheticContext,
+      );
+
+      expect(result.subject).toBe('Hi Jane Synthetic');
+      expect(renderedLines(logger)).toEqual([
+        '[PugInlineEmailTemplateRenderer] Rendering template from content for notification 123',
+      ]);
+    });
   });
 });
