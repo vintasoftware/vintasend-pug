@@ -1,6 +1,6 @@
 {
   "name": "vintasend-pug",
-  "version": "1.0.0-alpha6",
+  "version": "1.0.0-alpha7",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vintasoftware/vintasend-pug.git"
@@ -29,7 +29,7 @@
   "license": "MIT",
   "dependencies": {
     "pug": "^3.0.3",
-    "vintasend": "^1.0.0-alpha6"
+    "vintasend": "^1.0.0-alpha7"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.10",
